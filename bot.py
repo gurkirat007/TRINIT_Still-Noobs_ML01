@@ -32,6 +32,7 @@ async def on_message(message):
     message_content = message.content.lower()
     if message_content:
         reply = chat_bot.predict(message_content)
+        await message.channel.send(reply)
     print(len(message.attachments))
     if len(message.attachments) > 0:
         for attachment in message.attachments:
@@ -40,5 +41,5 @@ async def on_message(message):
                 await attachment.save(save_folder)
 
         reply = predictor.predict(save_folder)
-    await message.channel.send(reply)
+        await message.channel.send(reply)
 client.run(token)

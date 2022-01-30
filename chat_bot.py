@@ -5,10 +5,10 @@ import tensorflow_hub as hub
 import tensorflow as tf
 import numpy as np
 import pandas as pd
-
+import json
 # dataset coronavirus WHO
 pd.set_option('max_colwidth', 2000)  # Increase column width
-data = pd.read_csv("Test.csv", sep="&", index_col=False)
+data = pd.read_excel("WHO_FAQ.xlsx", index_col=False)
 data.head()
 data.reset_index(drop=True, inplace=True)
 # Use USE pretrained model to extract response encodings.
@@ -30,15 +30,6 @@ def predict(message):
         input=tf.constant(preprocess_sentences(data.Answer)),
         context=tf.constant(preprocess_sentences(data.Context)))['outputs']
 
-    # test_questions = [
-    #     "What about pregnant women?",
-    #     "Wat is de lengte van de incubatietijd?",
-    #     "Are animals contagious COVID-19?",
-    #     "Are there medicine against the coronavirus?",
-    #     "Can I breastfead when I have COVID-19?",
-    #     "Should I stay inside the house?",  # English questions are also possible.
-    #     "Kann ich mit meinem Hund spazieren gehen?"  # As well as German, and all the other languages supported by use-multilingual.
-    # ]
     test_questions = [message]
 
     # Create encodings for test questions
@@ -53,8 +44,10 @@ def predict(message):
 # Show them in a dataframe
     df = pd.DataFrame({'Test Questions': test_questions,
                        'Test Responses': test_responses})
-    # print(test_responses)
-    return df["Test Responses"]
+    # obj = test_responses.to_json()
+    # print(obj[1])
+
+    return df["Test Responses"].values.astype(str)[0]
 
 
 if __name__ == '__main__':
